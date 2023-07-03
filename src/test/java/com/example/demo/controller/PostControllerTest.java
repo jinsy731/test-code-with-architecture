@@ -1,7 +1,6 @@
 package com.example.demo.controller;
 
-import com.example.demo.model.dto.PostUpdateDto;
-import com.fasterxml.jackson.core.JsonProcessingException;
+import com.example.demo.post.domain.PostUpdate;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -12,8 +11,6 @@ import org.springframework.http.MediaType;
 import org.springframework.test.context.jdbc.Sql;
 import org.springframework.test.context.jdbc.SqlGroup;
 import org.springframework.test.web.servlet.MockMvc;
-import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
-import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
@@ -58,14 +55,14 @@ public class PostControllerTest {
     @Test
     void 사용자는_게시글을_수정할_수_있다() throws Exception {
         //given
-        PostUpdateDto postUpdateDto = PostUpdateDto.builder()
+        PostUpdate postUpdate = PostUpdate.builder()
                 .content("update post")
                 .build();
         //when
         //then
         mockMvc.perform(put("/api/posts/1")
                 .contentType(MediaType.APPLICATION_JSON)
-                .content(objectMapper.writeValueAsString(postUpdateDto))
+                .content(objectMapper.writeValueAsString(postUpdate))
             )
                 .andExpect(status().isOk())
                 .andExpect(status().isOk())
