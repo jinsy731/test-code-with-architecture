@@ -4,7 +4,6 @@ import com.example.demo.model.UserStatus;
 import com.example.demo.model.dto.UserUpdateDto;
 import com.example.demo.repository.UserEntity;
 import com.example.demo.repository.UserRepository;
-import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -71,6 +70,16 @@ public class UserControllerTest {
 
         UserEntity userEntity = userRepository.findById(2L).get();
         assertThat(userEntity.getStatus()).isEqualTo(UserStatus.ACTIVE);
+    }
+
+    @Test
+    void 사용자가_일치하지_않는_인증코드로_인증요청할_경우_권한없음_에러를_발생시킨다() throws Exception {
+        //given
+        //when
+        //then
+        mockMvc.perform(get("/api/users/2/verify")
+                        .queryParam("certificationCode", "aa-aaa123-a-aaa"))
+                .andExpect(status().isForbidden());
     }
 
     @Test
