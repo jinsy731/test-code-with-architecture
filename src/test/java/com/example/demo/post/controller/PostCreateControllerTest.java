@@ -3,14 +3,12 @@ package com.example.demo.post.controller;
 import com.example.demo.mock.TestClockHolder;
 import com.example.demo.mock.TestContainer;
 import com.example.demo.post.controller.response.PostResponse;
-import com.example.demo.post.domain.Post;
 import com.example.demo.post.domain.PostCreate;
 import com.example.demo.user.controller.response.UserResponse;
 import com.example.demo.user.domain.User;
 import com.example.demo.user.domain.UserStatus;
 import org.junit.jupiter.api.Test;
 import org.springframework.http.HttpStatusCode;
-import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 
 import java.util.UUID;
@@ -18,7 +16,6 @@ import java.util.UUID;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 public class PostCreateControllerTest {
 
@@ -45,7 +42,7 @@ public class PostCreateControllerTest {
                 .build();
 
         //when
-        ResponseEntity<PostResponse> result = testContainer.postCreateController.createPost(postCreate);
+        ResponseEntity<PostResponse> result = testContainer.postCreateController.create(postCreate);
         //then
         assertThat(result.getStatusCode()).isEqualTo(HttpStatusCode.valueOf(201));
         assertThat(result.getBody()).isNotNull();

@@ -4,7 +4,6 @@ import com.example.demo.common.domain.exception.CertificationCodeNotMatchedExcep
 import com.example.demo.common.domain.exception.ResourceNotFoundException;
 import com.example.demo.mock.TestClockHolder;
 import com.example.demo.mock.TestContainer;
-import com.example.demo.user.controller.port.UserReadService;
 import com.example.demo.user.controller.response.MyProfileResponse;
 import com.example.demo.user.controller.response.UserResponse;
 import com.example.demo.user.domain.User;
@@ -37,7 +36,7 @@ public class UserControllerTest {
 
 
         //when
-        ResponseEntity<UserResponse> result = testContainer.userController.getUserById(1);
+        ResponseEntity<UserResponse> result = testContainer.userController.getById(1);
 
         //then
         assertThat(result.getStatusCode()).isEqualTo(HttpStatusCode.valueOf(200));
@@ -58,7 +57,7 @@ public class UserControllerTest {
         //when
         //then
         assertThatThrownBy(() -> {
-            testContainer.userController.getUserById(1);
+            testContainer.userController.getById(1);
         }).isInstanceOf(ResourceNotFoundException.class);
     }
 
