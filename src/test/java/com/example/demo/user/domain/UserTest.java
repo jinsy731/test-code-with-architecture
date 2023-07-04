@@ -1,6 +1,8 @@
 package com.example.demo.user.domain;
 
 import com.example.demo.common.domain.exception.CertificationCodeNotMatchedException;
+import com.example.demo.mock.TestClockHolder;
+import com.example.demo.mock.TestUuidHolder;
 import org.junit.jupiter.api.Test;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -17,24 +19,27 @@ class UserTest {
                 .address("Seoul")
                 .build();
         //when
-        User result = User.from(userCreate);
+        User user = User.from(userCreate, new TestUuidHolder("aaa-aaa"));
         //then
-        assertThat(result.getEmail()).isEqualTo("jinsy731@gmail.com");
-        assertThat(result.getNickname()).isEqualTo("jinsy731");
-        assertThat(result.getAddress()).isEqualTo("Seoul");
-        assertThat(result.getStatus()).isEqualTo(UserStatus.PENDING);
-//        assertThat(result.getCertificationCode()).isEqualTo("...");
+        assertThat(user.getId()).isNull();
+        assertThat(user.getEmail()).isEqualTo("jinsy731@gmail.com");
+        assertThat(user.getNickname()).isEqualTo("jinsy731");
+        assertThat(user.getAddress()).isEqualTo("Seoul");
+        assertThat(user.getStatus()).isEqualTo(UserStatus.PENDING);
+        assertThat(user.getCertificationCode()).isEqualTo("aaa-aaa");
     }
     
     @Test
     void UserUpdate_객체로_데이터를_업데이트_할_수_있다() {
         //given
         User user = User.builder()
+                .id(1L)
                 .email("jinsy731@gmail.com")
                 .nickname("jinsy731")
                 .address("Seoul")
                 .status(UserStatus.PENDING)
                 .certificationCode("aaa-aaa")
+                .lastLoginAt(100L)
                 .build();
         UserUpdate userUpdate = UserUpdate.builder()
                 .address("Jeju")
@@ -43,8 +48,13 @@ class UserTest {
         //when
         user = user.update(userUpdate);
         //then
+        assertThat(user.getId()).isEqualTo(1L);
+        assertThat(user.getEmail()).isEqualTo("jinsy731@gmail.com");
+        assertThat(user.getCertificationCode()).isEqualTo("aaa-aaa");
+        assertThat(user.getLastLoginAt()).isEqualTo(100L);
         assertThat(user.getAddress()).isEqualTo("Jeju");
         assertThat(user.getNickname()).isEqualTo("jinsy731-2");
+        assertThat(user.getStatus()).isEqualTo(UserStatus.PENDING);
     }
     
     @Test
@@ -58,20 +68,22 @@ class UserTest {
                 .certificationCode("aaa-aaa")
                 .build();
         //when
-        user = user.login();
+        user = user.login(new TestClockHolder(100L));
         //then
-        assertThat(user.getLastLoginAt()).isGreaterThan(0);
+        assertThat(user.getLastLoginAt()).isEqualTo(100L);
     }
 
     @Test
     void 인증코드로_인증하면_상태가_ACTIVE로_변경되어야_한다() {
         //given
         User user = User.builder()
+                .id(1L)
                 .email("jinsy731@gmail.com")
                 .nickname("jinsy731")
                 .address("Seoul")
                 .status(UserStatus.PENDING)
                 .certificationCode("aaa-aaa")
+                .lastLoginAt(10L)
                 .build();
         //when
         user = user.certificate("aaa-aaa");

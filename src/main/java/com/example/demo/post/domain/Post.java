@@ -1,5 +1,6 @@
 package com.example.demo.post.domain;
 
+import com.example.demo.common.service.port.ClockHolder;
 import com.example.demo.user.domain.User;
 import lombok.Builder;
 import lombok.Getter;
@@ -15,21 +16,24 @@ public class Post {
     private Long modifiedAt;
     private User writer;
 
-    public static Post from(PostCreate postCreate, User user) {
+    public static Post from(
+            PostCreate postCreate,
+            User user,
+            ClockHolder clockHolder) {
         return Post.builder()
                 .writer(user)
                 .content(postCreate.getContent())
-                .createdAt(Clock.systemUTC().millis())
+                .createdAt(clockHolder.millis())
                 .build();
     }
 
-    public Post update(PostUpdate postUpdate) {
+    public Post update(PostUpdate postUpdate, ClockHolder clockHolder) {
         return Post.builder()
                 .id(id)
                 .writer(writer)
                 .content(postUpdate.getContent())
                 .createdAt(createdAt)
-                .modifiedAt(Clock.systemUTC().millis())
+                .modifiedAt(clockHolder.millis())
                 .build();
     }
 }

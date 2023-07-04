@@ -1,13 +1,9 @@
-package com.example.demo.post.service;
+package com.example.demo.medium;
 
-import com.example.demo.mock.FakePostRepository;
-import com.example.demo.mock.FakeUserRepository;
-import com.example.demo.mock.TestClockHolder;
 import com.example.demo.post.domain.Post;
 import com.example.demo.post.domain.PostCreate;
 import com.example.demo.post.domain.PostUpdate;
-import com.example.demo.user.domain.User;
-import org.junit.jupiter.api.BeforeEach;
+import com.example.demo.post.service.PostService;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -17,49 +13,21 @@ import org.springframework.test.context.TestPropertySource;
 import org.springframework.test.context.jdbc.Sql;
 import org.springframework.test.context.jdbc.SqlGroup;
 
-import static com.example.demo.user.domain.UserStatus.ACTIVE;
-import static com.example.demo.user.domain.UserStatus.PENDING;
 import static org.assertj.core.api.Assertions.assertThat;
+
+@SpringBootTest
+@TestPropertySource("classpath:test-application.properties")
+@SqlGroup({
+    @Sql(value = "/sql/post-service-test-data.sql", executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD),
+    @Sql(value = "/sql/delete-all-data.sql", executionPhase = Sql.ExecutionPhase.AFTER_TEST_METHOD)
+})
 public class PostServiceTest {
 
+    @Autowired
     private PostService postService;
+    @MockBean
+    private JavaMailSender javaMailSender;
 
-    @BeforeEach
-    void init() {
-        FakePostRepository postRepository = new FakePostRepository();
-        FakeUserRepository userRepository = new FakeUserRepository();
-        postService = PostService.builder()
-                .postRepository(postRepository)
-                .userRepository(userRepository)
-                .clockHolder(new TestClockHolder(100L))
-                .build();
-
-        User user = userRepository.save(User.builder()
-                .id(1L)
-                .email("jinsy731@gmail.com")
-                .nickname("jinsy731")
-                .certificationCode("aa-aaa-a-a")
-                .status(ACTIVE)
-                .lastLoginAt(0L)
-                .build());
-
-        userRepository.save(User.builder()
-                .id(2L)
-                .email("jinsy732@gmail.com")
-                .nickname("jinsy732")
-                .certificationCode("aa-aaa-a-aaa")
-                .status(PENDING)
-                .lastLoginAt(0L)
-                .build());
-
-        postRepository.save(Post.builder()
-                .id(1L)
-                .writer(user)
-                .content("hello world")
-                .createdAt(16785306739558L)
-                .modifiedAt(0L)
-                .build());
-    }
     @Test
     void getById_로_게시물을_찾아올_수_있다() {
         //given
@@ -84,7 +52,7 @@ public class PostServiceTest {
         assertThat(result.getId()).isNotNull();
         assertThat(result.getContent()).isEqualTo("new post");
         assertThat(result.getWriter().getId()).isEqualTo(1);
-        assertThat(result.getCreatedAt()).isEqualTo(100L);
+        assertThat(result.getCreatedAt()).isGreaterThan(0);
     }
 
     @Test
@@ -98,6 +66,6 @@ public class PostServiceTest {
         //then
         Post post = postService.getById(1);
         assertThat(post.getContent()).isEqualTo("update post");
-        assertThat(post.getModifiedAt()).isEqualTo(100L);
+        assertThat(post.getModifiedAt()).isGreaterThan(0);
     }
 }
