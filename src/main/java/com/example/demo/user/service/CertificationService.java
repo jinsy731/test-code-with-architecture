@@ -1,6 +1,5 @@
 package com.example.demo.user.service;
 
-import com.example.demo.post.domain.Post;
 import com.example.demo.user.service.port.MailSender;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;

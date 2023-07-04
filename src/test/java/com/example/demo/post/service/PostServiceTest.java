@@ -9,26 +9,19 @@ import com.example.demo.post.domain.PostUpdate;
 import com.example.demo.user.domain.User;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.boot.test.mock.mockito.MockBean;
-import org.springframework.mail.javamail.JavaMailSender;
-import org.springframework.test.context.TestPropertySource;
-import org.springframework.test.context.jdbc.Sql;
-import org.springframework.test.context.jdbc.SqlGroup;
 
 import static com.example.demo.user.domain.UserStatus.ACTIVE;
 import static com.example.demo.user.domain.UserStatus.PENDING;
 import static org.assertj.core.api.Assertions.assertThat;
 public class PostServiceTest {
 
-    private PostService postService;
+    private PostServiceImpl postService;
 
     @BeforeEach
     void init() {
         FakePostRepository postRepository = new FakePostRepository();
         FakeUserRepository userRepository = new FakeUserRepository();
-        postService = PostService.builder()
+        postService = PostServiceImpl.builder()
                 .postRepository(postRepository)
                 .userRepository(userRepository)
                 .clockHolder(new TestClockHolder(100L))

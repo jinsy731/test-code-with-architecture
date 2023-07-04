@@ -3,7 +3,7 @@ package com.example.demo.medium;
 import com.example.demo.post.domain.Post;
 import com.example.demo.post.domain.PostCreate;
 import com.example.demo.post.domain.PostUpdate;
-import com.example.demo.post.service.PostService;
+import com.example.demo.post.service.PostServiceImpl;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -24,7 +24,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 public class PostServiceTest {
 
     @Autowired
-    private PostService postService;
+    private PostServiceImpl postService;
     @MockBean
     private JavaMailSender javaMailSender;
 
