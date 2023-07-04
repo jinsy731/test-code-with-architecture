@@ -1,9 +1,8 @@
 package com.example.demo.post.service;
 
+import com.example.demo.post.domain.Post;
 import com.example.demo.post.domain.PostCreate;
 import com.example.demo.post.domain.PostUpdate;
-import com.example.demo.post.service.PostService;
-import com.example.demo.post.infrastructure.PostEntity;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -13,8 +12,7 @@ import org.springframework.test.context.TestPropertySource;
 import org.springframework.test.context.jdbc.Sql;
 import org.springframework.test.context.jdbc.SqlGroup;
 
-import static org.assertj.core.api.Assertions.*;
-import static org.mockito.BDDMockito.any;
+import static org.assertj.core.api.Assertions.assertThat;
 
 @SpringBootTest
 @TestPropertySource("classpath:test-application.properties")
@@ -33,7 +31,7 @@ public class PostServiceTest {
     void getById_로_게시물을_찾아올_수_있다() {
         //given
         //when
-        PostEntity result = postService.getById(1);
+        Post result = postService.getById(1);
         //then
         assertThat(result.getId()).isEqualTo(1);
         assertThat(result.getContent()).isEqualTo("hello world");
@@ -48,7 +46,7 @@ public class PostServiceTest {
                 .writerId(1)
                 .build();
         //when
-        PostEntity result = postService.create(postCreate);
+        Post result = postService.create(postCreate);
         //then
         assertThat(result.getId()).isNotNull();
         assertThat(result.getContent()).isEqualTo("new post");
@@ -57,7 +55,7 @@ public class PostServiceTest {
     }
 
     @Test
-    void postUpdateDto_를_사용하여_게시글을_생성할_수_있다() {
+    void postUpdateDto_를_사용하여_게시글을_수정할_수_있다() {
         //given
         PostUpdate postUpdate = PostUpdate.builder()
                 .content("update post")
@@ -65,8 +63,8 @@ public class PostServiceTest {
         //when
         postService.update(1, postUpdate);
         //then
-        PostEntity postEntity = postService.getById(1);
-        assertThat(postEntity.getContent()).isEqualTo("update post");
-        assertThat(postEntity.getModifiedAt()).isGreaterThan(0);
+        Post post = postService.getById(1);
+        assertThat(post.getContent()).isEqualTo("update post");
+        assertThat(post.getModifiedAt()).isGreaterThan(0);
     }
 }

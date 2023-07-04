@@ -65,7 +65,6 @@ public class PostControllerTest {
                 .content(objectMapper.writeValueAsString(postUpdate))
             )
                 .andExpect(status().isOk())
-                .andExpect(status().isOk())
                 .andExpect(jsonPath("$.id").value(1))
                 .andExpect(jsonPath("$.content").value("update post"))
                 .andExpect(jsonPath("$.writer.id").value(1))

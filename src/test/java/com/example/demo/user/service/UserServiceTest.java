@@ -2,6 +2,7 @@ package com.example.demo.user.service;
 
 import com.example.demo.common.domain.exception.CertificationCodeNotMatchedException;
 import com.example.demo.common.domain.exception.ResourceNotFoundException;
+import com.example.demo.user.domain.User;
 import com.example.demo.user.domain.UserCreate;
 import com.example.demo.user.domain.UserUpdate;
 import com.example.demo.user.infrastructure.UserEntity;
@@ -41,7 +42,7 @@ public class UserServiceTest {
         //given
         String email = "jinsy731@gmail.com";
         //when
-        UserEntity result = userService.getByEmail(email);
+        User result = userService.getByEmail(email);
         //then
         assertThat(result.getNickname()).isEqualTo("jinsy731");
     }
@@ -61,7 +62,7 @@ public class UserServiceTest {
     void getById_은_ACTIVE_상태인_유저를_찾아올_수_있다() {
         //given
         //when
-        UserEntity result = userService.getById(1);
+        User result = userService.getById(1);
         //then
         assertThat(result.getNickname()).isEqualTo("jinsy731");
     }
@@ -86,7 +87,7 @@ public class UserServiceTest {
                 .build();
         doNothing().when(javaMailSender).send(any(SimpleMailMessage.class));
         //when
-        UserEntity result = userService.create(userCreate);
+        User result = userService.create(userCreate);
         //then
         assertThat(result.getId()).isNotNull();
         assertThat(result.getStatus()).isEqualTo(PENDING);
@@ -103,10 +104,10 @@ public class UserServiceTest {
         //when
         userService.update(1, userUpdate);
         //then
-        UserEntity userEntity = userService.getById(1);
-        assertThat(userEntity.getId()).isNotNull();
-        assertThat(userEntity.getAddress()).isEqualTo("Incheon");
-        assertThat(userEntity.getNickname()).isEqualTo("jinsy731-1");
+        User user = userService.getById(1);
+        assertThat(user.getId()).isNotNull();
+        assertThat(user.getAddress()).isEqualTo("Incheon");
+        assertThat(user.getNickname()).isEqualTo("jinsy731-1");
     }
     
     @Test
@@ -115,10 +116,10 @@ public class UserServiceTest {
         //when
         userService.login(1);
         //then
-        UserEntity userEntity = userService.getById(1);
-        assertThat(userEntity.getLastLoginAt()).isGreaterThan(0L);
+        User user = userService.getById(1);
+        assertThat(user.getLastLoginAt()).isGreaterThan(0L);
         // 의존성이 숨겨져있어 로그인 시간 검증 불가.. -> 후에 리팩토링
-//        assertThat(userEntity.getLastLoginAt()).isEqualTo("...");
+//        assertThat(user.getLastLoginAt()).isEqualTo("...");
     }
 
     @Test
@@ -127,8 +128,8 @@ public class UserServiceTest {
         //when
         userService.verifyEmail(1, "aa-aaa-a-a");
         //then
-        UserEntity userEntity = userService.getById(1);
-        assertThat(userEntity.getStatus()).isEqualTo(ACTIVE);
+        User user = userService.getById(1);
+        assertThat(user.getStatus()).isEqualTo(ACTIVE);
     }
 
     @Test
